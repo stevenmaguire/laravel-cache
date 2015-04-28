@@ -1,0 +1,44 @@
+{
+    "name": "stevenmaguire/laravel-cache",
+    "description": "Seamlessly adding caching to Laravel service objects",
+    "keywords": [
+        "stevenmaguire",
+        "laravel",
+        "eloquent",
+        "cache",
+        "orm",
+        "query builder"
+    ],
+    "homepage": "https://github.com/stevenmaguire/laravel-cache",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Steven Maguire",
+            "email": "stevenmaguire@gmail.com",
+            "homepage": "http://stevenmaguire.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*",
+        "scrutinizer/ocular": "~1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Stevenmaguire\\Laravel\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Stevenmaguire\\Laravel\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
