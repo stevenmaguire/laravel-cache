@@ -70,7 +70,7 @@ trait EloquentCacheTrait
     protected function getByAttributeFromCollection(Collection $collection, $attribute, $value = null)
     {
         return $collection->filter(function($item) use ($attribute, $value) {
-            if (property_exists($item, $attribute) && $value) {
+            if (isset($item->$attribute) && $value) {
                 return $item->$attribute == $value;
             }
 
