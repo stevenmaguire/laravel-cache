@@ -9,6 +9,20 @@ use Illuminate\Support\Facades\Log;
 abstract class EloquentCache implements Cacheable
 {
     /**
+     * Cache duration in minutes; 0 is forever
+     *
+     * @var int
+     */
+    protected $cacheForMinutes = 0;
+
+    /**
+     * Enable caching
+     *
+     * @var boolean
+     */
+    protected $enableCaching = true;
+
+    /**
      * Enable logging
      *
      * @var boolean
@@ -42,6 +56,26 @@ abstract class EloquentCache implements Cacheable
             $this->log('refreshing cache for '.get_class($this).' ('.$key.')');
 
             return $query->$verb();
+        });
+    }
+
+    /**
+     * Get items from collection whose properties match a given attribute and value
+     *
+     * @param  Collection  $collection
+     * @param  string      $attribute
+     * @param  mixed       $value
+     *
+     * @return Collection
+     */
+    protected function getByAttributeFromCollection(Collection $collection, $attribute, $value = null)
+    {
+        return $collection->filter(function($item) use ($attribute, $value) {
+            if (property_exists($item, $attribute) && $value) {
+                return $item->$attribute == $value;
+            }
+
+            return false;
         });
     }
 
