@@ -92,7 +92,7 @@ trait EloquentCacheTrait
      *
      * @return string
      */
-    private function getCacheSelector($id = null)
+    protected function getCacheSelector($id = null)
     {
         return $this->getCacheKey().($id ? '.'.$id : '');
     }
@@ -102,7 +102,7 @@ trait EloquentCacheTrait
      *
      * @return array
      */
-    private function getKeys()
+    protected function getKeys()
     {
         return CacheFacade::get($this->cacheIndexKey, []);
     }
@@ -119,7 +119,7 @@ trait EloquentCacheTrait
      *
      * @return array
      */
-    private function getServiceKeys()
+    protected function getServiceKeys()
     {
         $keys = $this->getKeys();
         $serviceKey = $this->getCacheKey();
@@ -140,7 +140,7 @@ trait EloquentCacheTrait
      *
      * @return void
      */
-    private function indexKey($key)
+    protected function indexKey($key)
     {
         $keys = $this->getServiceKeys();
 
@@ -158,7 +158,7 @@ trait EloquentCacheTrait
      *
      * @return void
      */
-    private function log($message)
+    protected function log($message)
     {
         if ($this->enableLogging) {
             Log::info($message);
@@ -170,7 +170,7 @@ trait EloquentCacheTrait
      *
      * @param array $keys
      */
-    private function setServiceKeys($keys = [])
+    protected function setServiceKeys($keys = [])
     {
         $allkeys = $this->getKeys();
         $serviceKey = $this->getCacheKey();
