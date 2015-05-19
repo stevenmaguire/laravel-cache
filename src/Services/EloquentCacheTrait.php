@@ -43,7 +43,7 @@ trait EloquentCacheTrait
      * @param  Builder  $query
      * @param  string   $verb Optional Builder verb to execute query
      *
-     * @return Collection|Model|[]|null
+     * @return Collection|Model|array|null
      */
     protected function cache($key, Builder $query, $verb = 'get')
     {
