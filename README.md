@@ -85,6 +85,15 @@ class UserRegistrar extends EloquentCache
 
         return $this->cache('id('.$id.')', $query, 'first');
     }
+
+    public function getRecent($skip = 0, $take = 100)
+    {
+        $query = $this->user->orderBy('created_at', 'desc')
+            ->take($take)
+            ->skip($skip);
+
+        return $this->cache('recent('.$skip.','.$take.')', $query);
+    }
 }
 ```
 The `cache` method takes three parameters:
