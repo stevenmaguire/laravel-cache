@@ -27,6 +27,11 @@ class ConcreteTest extends EloquentCache
         return $this;
     }
 
+    public function getModel()
+    {
+
+    }
+
     public function getCacheIndexKey()
     {
         return $this->cacheIndexKey;
