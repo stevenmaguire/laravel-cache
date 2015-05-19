@@ -51,11 +51,21 @@ trait EloquentCacheTrait
 
         $this->indexKey($key);
 
-        return CacheFacade::rememberForever($key, function () use ($key, $query, $verb) {
+        $fetchData = function () use ($key, $query, $verb) {
             $this->log('refreshing cache for '.get_class($this).' ('.$key.')');
 
             return $query->$verb();
-        });
+        };
+
+        if ($this->enableCaching) {
+            if ($this->cacheForMinutes > 0) {
+                return CacheFacade::remember($key, $this->cacheForMinutes, $fetchData);
+            }
+
+            return CacheFacade::rememberForever($key, $fetchData);
+        }
+
+        return $fetchData();
     }
 
     /**

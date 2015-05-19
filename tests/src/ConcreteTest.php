@@ -1,6 +1,8 @@
 <?php namespace Stevenmaguire\Laravel\Test;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Stevenmaguire\Laravel\Services\EloquentCache;
 
 class ConcreteTest extends EloquentCache
@@ -15,12 +17,24 @@ class ConcreteTest extends EloquentCache
      */
     public function getCacheKey()
     {
-        return $testCacheKey;
+        return $this->testCacheKey;
     }
 
     public function setCacheKey($key)
     {
         $this->testCacheKey = $key;
+
+        return $this;
+    }
+
+    public function getCacheIndexKey()
+    {
+        return $this->cacheIndexKey;
+    }
+
+    public function setCacheIndexKey($key)
+    {
+        $this->cacheIndexKey = $key;
 
         return $this;
     }
@@ -61,5 +75,40 @@ class ConcreteTest extends EloquentCache
         $this->enableLogging = $enable;
 
         return $this;
+    }
+
+    public function setServiceKeys($keys = [])
+    {
+        return parent::setServiceKeys($keys);
+    }
+
+    public function getServiceKeys()
+    {
+        return parent::getServiceKeys();
+    }
+
+    public function indexKey($key)
+    {
+        return parent::indexKey($key);
+    }
+
+    public function getKeys()
+    {
+        return parent::getKeys();
+    }
+
+    public function getCacheSelector($id = null)
+    {
+        return parent::getCacheSelector($id);
+    }
+
+    public function getByAttributeFromCollection(Collection $collection, $attribute, $value = null)
+    {
+        return parent::getByAttributeFromCollection($collection, $attribute, $value);
+    }
+
+    public function cache($key, Builder $query, $verb = 'get')
+    {
+        return parent::cache($key, $query, $verb);
     }
 }
