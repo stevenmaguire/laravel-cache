@@ -39,23 +39,6 @@ class ConcreteTest extends EloquentCache
         return $this;
     }
 
-    /**
-     * Get model from concrete service
-     *
-     * @return Illuminate\Database\Eloquent\Model
-     */
-    public function getModel()
-    {
-
-    }
-
-    public function setModel(Model $model)
-    {
-        $this->testModel = $model;
-
-        return $this;
-    }
-
     public function setCacheForMinutes($minutes)
     {
         $this->cacheForMinutes = $minutes;

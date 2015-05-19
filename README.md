@@ -19,9 +19,155 @@ $ composer require stevenmaguire/laravel-cache
 
 ## Usage
 
-``` php
+### Include the base service
 
+Extend your service class with the EloquentCache class.
+
+```php
+class UserRegistrar extends Stevenmaguire\Laravel\Services\EloquentCache
+{
+    //
+}
 ```
+
+Implement the interface and use the trait.
+
+```php
+class UserRegistrar implements Stevenmaguire\Laravel\Contracts\Cacheable
+{
+    use \Stevenmaguire\Laravel\Services\EloquentCacheTrait;
+}
+```
+
+### Implement abstract methods
+
+```php
+    /**
+     * Get cache key from concrete service
+     *
+     * @return string
+     */
+    abstract protected function getCacheKey();
+
+    /**
+     * Get model from concrete service
+     *
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    abstract protected function getModel();
+```
+
+### Construct queries
+
+Build queries using Eloquent and request cache object.
+
+```php
+use App\User;
+use Stevenmaguire\Laravel\Services\EloquentCache;
+
+class UserRegistrar extends EloquentCache
+{
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
+    public function getAllUsers()
+    {
+        $query = $this->user->query();
+
+        return $this->cache('all', $query);
+    }
+
+    public function getUserById($id)
+    {
+        $query = $this->user->where('id', $id);
+
+        return $this->cache('id('.$id.')', $query, 'first');
+    }
+}
+```
+The `cache` method takes three parameters:
+
+- The unique key associated with the method's intentions
+- The query `Builder` object for the Eloquent query
+- The optional verb, `get`, `first`, `list`, etc; `get` by default
+
+The cache service will automatically index all of the unique keys used by your application. These keys will be used when the `flushCache` method is called on each service implementing the base cache service.
+
+### Configure caching
+
+For each of the services you implement using the `EloquentCache` you can configure the following:
+
+#### Duration of cache minutes
+
+```php
+use Stevenmaguire\Laravel\Services\EloquentCache;
+
+class UserRegistrar extends EloquentCache
+{
+    protected $cacheForMinutes = 15;
+
+    //
+}
+```
+
+#### Disable caching
+
+```php
+use Stevenmaguire\Laravel\Services\EloquentCache;
+
+class UserRegistrar extends EloquentCache
+{
+    protected $enableCaching = false;
+
+    //
+}
+```
+
+#### Disable logging
+
+```php
+use Stevenmaguire\Laravel\Services\EloquentCache;
+
+class UserRegistrar extends EloquentCache
+{
+    protected $enableLogging = false;
+
+    //
+}
+```
+
+#### Set a custom cache index for the keys
+
+```php
+use Stevenmaguire\Laravel\Services\EloquentCache;
+
+class UserRegistrar extends EloquentCache
+{
+    protected $cacheIndexKey = 'my-service-keys-index';
+
+    //
+}
+```
+
+### Bind to IoC Container
+
+```php
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        $this->app->when('App\Handlers\Events\UserHandler')
+          ->needs('Stevenmaguire\Laravel\Contracts\Cacheable')
+          ->give('App\Services\UserRegistrar');
+    }
+}
+```
+
+In this particular example, `UserHandler` is responsible for flushing the user service cache when a specific event occurs. The `UserHandler` takes a dependacy on the `flushCache` method within the `UserRegistrar` service.
 
 ## Testing
 
