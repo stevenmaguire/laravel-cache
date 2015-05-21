@@ -7,7 +7,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/stevenmaguire/laravel-cache.svg?style=flat-square)](https://scrutinizer-ci.com/g/stevenmaguire/laravel-cache)
 [![Total Downloads](https://img.shields.io/packagist/dt/stevenmaguire/laravel-cache.svg?style=flat-square)](https://packagist.org/packages/league/laravel-cache)
 
-Seamlessly adding caching to Laravel service objects.
+Seamlessly adding caching to Laravel Eloquent service objects.
 
 ## Install
 
