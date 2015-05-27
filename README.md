@@ -178,6 +178,7 @@ class AppServiceProvider extends ServiceProvider
 
 In this particular example, `UserHandler` is responsible for flushing the user service cache when a specific event occurs. The `UserHandler` takes a dependacy on the `flushCache` method within the `UserRegistrar` service.
 
+
 ## Testing
 
 ``` bash
