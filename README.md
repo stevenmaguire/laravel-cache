@@ -197,7 +197,7 @@ In this particular example, `UserHandler` is responsible for flushing the user s
 ## Testing
 
 ``` bash
-$ phpunit
+$ ./vendor/bin/phpunit
 ```
 
 ## Contributing
