@@ -60,7 +60,7 @@ class UserRegistrar implements Stevenmaguire\Laravel\Contracts\Cacheable
 
 `getCacheKey` is intended to provide cache key grouping at the repository level. It will attempt to use this as a prefix when creating cache keys.
 
-`getModel` is intended to return the model associated with the repository in question, assuming you have one repo per entity. 
+`getModel` is intended to return the model associated with the repository in question, assuming you have one repo per entity.
 
 ### Construct queries
 
@@ -115,7 +115,22 @@ The `cache` method takes three parameters:
 
 - The unique key associated with the method's intentions
 - The query `Builder` object for the Eloquent query
-- The optional verb, `get`, `first`, `list`, etc; `get` by default
+- The optional verb, `get`, `first`, `list`, `paginate` etc; `get` by default
+
+If the method associated with the optional verb takes parameters, like `paginate`, the parameters can be expressed as a comma separated list following the verb and a colon. If a parameter expects an array of literal values, these may be expressed as a pipe delimited sting.
+
+```php
+/**
+ * Paginate users with all pagination parameters
+ */
+public function getAllUsers()
+{
+    $query = $this->user->query();
+
+    return $this->cache('all', $query, 'paginate:15,id|email|name,sheet,2');
+    // $query->paginate(15, ['id', 'email', 'name'], 'sheet', 2);
+}
+```
 
 The cache service will automatically index all of the unique keys used by your application. These keys will be used when the `flushCache` method is called on each service implementing the base cache service.
 
