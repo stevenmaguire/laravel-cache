@@ -172,12 +172,13 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testItCanGetServiceKeysFilteredByPattern()
     {
-        $pattern = 'test\.[0-9]{1}';
+        $pattern = '^test\.[0-9]{1}$';
         $cacheKey = uniqid();
         $existingKeys[$cacheKey] = [
             'test.1',
             'test.2',
             'test.3',
+            'test.10',
             'test.one',
             'test.two',
             'test.three',
