@@ -95,6 +95,28 @@ trait EloquentCacheTrait
     }
 
     /**
+     * Iterates over given array to remove values that don't match a given
+     * regular expression pattern.
+     *
+     * @param  array   $values
+     * @param  string  $pattern
+     *
+     * @return array
+     */
+    public static function filterArrayValuesWithPattern(array $values, $pattern)
+    {
+        return array_values(
+            array_filter(
+                array_map(function ($key) use ($pattern) {
+                    if ((bool) preg_match('/'.$pattern.'/', $key)) {
+                        return $key;
+                    }
+                }, $values)
+            )
+        );
+    }
+
+    /**
      * Get items from collection whose properties match a given attribute and value
      *
      * @param  Collection  $collection
@@ -153,9 +175,11 @@ trait EloquentCacheTrait
     /**
      * Get keys for concrete service
      *
+     * @param  string $pattern
+     *
      * @return array
      */
-    protected function getServiceKeys()
+    protected function getServiceKeys($pattern = null)
     {
         $keys = $this->getKeys();
         $serviceKey = $this->getCacheKey();
@@ -164,6 +188,13 @@ trait EloquentCacheTrait
             $keys[$serviceKey] = [];
         } elseif (!is_array($keys[$serviceKey])) {
             $keys[$serviceKey] = [$keys[$serviceKey]];
+        }
+
+        if (!is_null($pattern)) {
+            $keys[$serviceKey] = $this->filterArrayValuesWithPattern(
+                $keys[$serviceKey],
+                $pattern
+            );
         }
 
         return $keys[$serviceKey];
@@ -219,11 +250,13 @@ trait EloquentCacheTrait
     /**
      * Flush the cache for the concrete service
      *
+     * @param  string $pattern
+     *
      * @return void
      */
-    public function flushCache()
+    public function flushCache($pattern = null)
     {
-        $keys = $this->getServiceKeys();
+        $keys = $this->getServiceKeys($pattern);
 
         array_map(function ($key) {
             $this->log('flushing cache for '.get_class($this).' ('.$key.')');

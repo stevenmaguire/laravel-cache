@@ -190,6 +190,23 @@ class UserRegistrar extends EloquentCache
 }
 ```
 
+### Flushing cache
+
+Each service object that implements caching via `Stevenmaguire\Laravel\Services\EloquentCache` can flush its own cache, independently of other consuming services.
+
+Your application can flush the cache for all keys within the service object `serviceKey` group.
+
+```php
+$userRegistrar->flushCache();
+```
+
+Your application can only flush the cache for keys within the service object `serviceKey` group that match a particular regular expression pattern.
+
+```php
+// Flush cache for all cached users with a single digit user id
+$userRegistrar->flushCache('id\([0-9]{1}\)');
+```
+
 ### Bind to IoC Container
 
 ```php
