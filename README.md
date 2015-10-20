@@ -204,7 +204,7 @@ Your application can only flush the cache for keys within the service object `se
 
 ```php
 // Flush cache for all cached users with a single digit user id
-$userRegistrar->flushCache('id\([0-9]{1}\)');
+$userRegistrar->flushCache('^id\([0-9]{1}\)$');
 ```
 
 ### Bind to IoC Container
