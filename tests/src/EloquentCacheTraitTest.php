@@ -278,12 +278,15 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
         $key = uniqid();
         $query = $this->builder;
         $verb = uniqid();
+        $arg1 = uniqid();
+        $arg2 = [uniqid(), uniqid(), uniqid()];
+        $verbString = $verb.':'.$arg1.','.implode('|', $arg2);
         $this->service->setEnableCaching(false);
         $this->service->shouldReceive('getCacheSelector')->with($key)->once()->andReturn($key);
         $this->service->shouldReceive('indexKey')->with($key)->once();
         $this->service->shouldReceive('log')->once();
-        $query->shouldReceive($verb)->once();
+        $query->shouldReceive($verb)->with($arg1, $arg2)->once();
 
-        $this->service->cache($key, $query, $verb);
+        $this->service->cache($key, $query, $verbString);
     }
 }

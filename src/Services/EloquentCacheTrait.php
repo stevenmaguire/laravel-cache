@@ -54,7 +54,7 @@ trait EloquentCacheTrait
         $fetchData = function () use ($key, $query, $verb) {
             $this->log('refreshing cache for '.get_class($this).' ('.$key.')');
 
-            return $query->$verb();
+            return $this->callQueryVerb($query, $verb);
         };
 
         if ($this->enableCaching) {
@@ -66,6 +66,32 @@ trait EloquentCacheTrait
         }
 
         return $fetchData();
+    }
+
+    /**
+     * Attempts to deconstruct verb into method name and parameters to call on
+     * query builder object.
+     *
+     * @param  Builder  $query
+     * @param  string   $verbKey
+     *
+     * @return Collection|Model|array|null
+     */
+    protected function callQueryVerb(Builder $query, $verbKey)
+    {
+        $verbParts = explode(':', $verbKey);
+        $verb = array_shift($verbParts);
+        $params = [];
+
+        if (!empty($verbParts)) {
+            $params = array_map(function ($param) {
+                $subParams = explode('|', $param);
+
+                return count($subParams) > 1 ? $subParams : $subParams[0];
+            }, explode(',', array_shift($verbParts)));
+        }
+
+        return call_user_func_array([$query, $verb], $params);
     }
 
     /**
