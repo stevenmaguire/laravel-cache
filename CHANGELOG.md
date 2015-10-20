@@ -2,6 +2,23 @@
 
 All Notable changes to `stevenmaguire/laravel-cache` will be documented in this file
 
+## 0.1.4 - 2015-10-20
+
+### Added
+- Add support for fluching cache using regular expressions
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.1.3 - 2015-10-19
 
 ### Added

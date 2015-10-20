@@ -73,6 +73,20 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
         $this->service->flushCache();
     }
 
+    public function testItCanFlushCacheForServiceWithPattern()
+    {
+        $pattern = uniqid();
+        $count = rand(2,10);
+        $serviceKeys = $this->makeArray($count, true);
+        $cacheKey = uniqid();
+        $this->service->setCacheIndexKey($cacheKey);
+        $this->service->shouldReceive('getServiceKeys')->with($pattern)->once()->andReturn($serviceKeys);
+        Log::shouldReceive('info')->times($count);
+        CacheFacade::shouldReceive('forget')->times($count);
+
+        $this->service->flushCache($pattern);
+    }
+
     public function testItCanSetServiceKeys()
     {
         $count = rand(2,10);
@@ -152,6 +166,27 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
         $this->service->shouldReceive('getKeys')->once()->andReturn($existingKeys);
 
         $serviceKeys = $this->service->getServiceKeys();
+
+        $this->assertEquals($expectedKeys, $serviceKeys);
+    }
+
+    public function testItCanGetServiceKeysFilteredByPattern()
+    {
+        $pattern = 'test\.[0-9]{1}';
+        $cacheKey = uniqid();
+        $existingKeys[$cacheKey] = [
+            'test.1',
+            'test.2',
+            'test.3',
+            'test.one',
+            'test.two',
+            'test.three',
+        ];
+        $this->service->setCacheKey($cacheKey);
+        $this->service->shouldReceive('getKeys')->once()->andReturn($existingKeys);
+        $expectedKeys = array_slice($existingKeys[$cacheKey], 0, 3);
+
+        $serviceKeys = $this->service->getServiceKeys($pattern);
 
         $this->assertEquals($expectedKeys, $serviceKeys);
     }

@@ -70,9 +70,9 @@ class ConcreteTest extends EloquentCache
         return parent::setServiceKeys($keys);
     }
 
-    public function getServiceKeys()
+    public function getServiceKeys($pattern = null)
     {
-        return parent::getServiceKeys();
+        return parent::getServiceKeys($pattern);
     }
 
     public function indexKey($key)
