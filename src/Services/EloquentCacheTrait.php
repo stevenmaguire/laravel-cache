@@ -47,8 +47,6 @@ trait EloquentCacheTrait
      */
     protected function cache($key, Builder $query, $verb = 'get')
     {
-        $key = $this->getCacheSelector($key);
-
         $this->indexKey($key);
 
         $fetchData = function () use ($key, $query, $verb) {
@@ -142,18 +140,6 @@ trait EloquentCacheTrait
      * @return string
      */
     abstract protected function getCacheKey();
-
-    /**
-     * Create and get cache selector
-     *
-     * @param  string  $id Optional id to suffix base key
-     *
-     * @return string
-     */
-    protected function getCacheSelector($id = null)
-    {
-        return $this->getCacheKey().($id ? '.'.$id : '');
-    }
 
     /**
      * Get keys from key inventory

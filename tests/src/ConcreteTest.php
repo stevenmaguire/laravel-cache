@@ -85,11 +85,6 @@ class ConcreteTest extends EloquentCache
         return parent::getKeys();
     }
 
-    public function getCacheSelector($id = null)
-    {
-        return parent::getCacheSelector($id);
-    }
-
     public function getByAttributeFromCollection(Collection $collection, $attribute, $value = null)
     {
         return parent::getByAttributeFromCollection($collection, $attribute, $value);

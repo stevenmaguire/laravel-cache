@@ -105,12 +105,24 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
 
     public function testItCanIndexKeys()
     {
-        $count = rand(2,10);
-        $keys = $this->makeArray($count);
+        $cacheKey = uniqid();
         $key = uniqid();
-        $mergedKeys = array_merge($keys, [$key]);
-        $this->service->shouldReceive('getServiceKeys')->once()->andReturn($keys);
-        $this->service->shouldReceive('setServiceKeys')->with($mergedKeys)->once();
+        $existingKeys = [
+            $cacheKey => [
+                'one',
+                'two'
+            ],
+            'two' => [
+                'one',
+                'two'
+            ]
+        ];
+        $afterKeys = $existingKeys;
+        array_push($afterKeys[$cacheKey], $key);
+        $cacheIndex = $this->service->getCacheIndexKey();
+        $this->service->setCacheKey($cacheKey);
+        CacheFacade::shouldReceive('get')->times(2)->andReturn($existingKeys, $afterKeys);
+        CacheFacade::shouldReceive('forever')->with($cacheIndex, $afterKeys);
 
         $this->service->indexKey($key);
     }
@@ -192,28 +204,6 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedKeys, $serviceKeys);
     }
 
-    public function testItCanGetCacheSelectorWithoutId()
-    {
-        $cacheKey = uniqid();
-        $this->service->setCacheKey($cacheKey);
-
-        $cacheSelector = $this->service->getCacheSelector();
-
-        $this->assertEquals($cacheKey, $cacheSelector);
-    }
-
-    public function testItCanGetCacheSelectorWithId()
-    {
-        $id = uniqid(1);
-        $cacheKey = uniqid(2);
-        $expectedSelector = $cacheKey.'.'.$id;
-        $this->service->setCacheKey($cacheKey);
-
-        $cacheSelector = $this->service->getCacheSelector($id);
-
-        $this->assertEquals($expectedSelector, $cacheSelector);
-    }
-
     public function testItCanGetAttributeFromCollectionWhenValidAttributeAndValueGiven()
     {
         $count = rand(2,10);
@@ -274,7 +264,6 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
         $query = $this->builder;
         $verb = 'get';
         $this->service->setCacheForMinutes(0)->setEnableCaching(true);
-        $this->service->shouldReceive('getCacheSelector')->with($key)->once()->andReturn($key);
         $this->service->shouldReceive('indexKey')->with($key)->once();
         CacheFacade::shouldReceive('rememberForever')->with($key, m::any())->once();
 
@@ -288,7 +277,6 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
         $verb = 'get';
         $minutes = -1 * abs(rand(1,60));
         $this->service->setCacheForMinutes($minutes)->setEnableCaching(true);
-        $this->service->shouldReceive('getCacheSelector')->with($key)->once()->andReturn($key);
         $this->service->shouldReceive('indexKey')->with($key)->once();
         CacheFacade::shouldReceive('rememberForever')->with($key, m::any())->once();
 
@@ -302,7 +290,6 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
         $verb = 'get';
         $minutes = rand(1,60);
         $this->service->setCacheForMinutes($minutes)->setEnableCaching(true);
-        $this->service->shouldReceive('getCacheSelector')->with($key)->once()->andReturn($key);
         $this->service->shouldReceive('indexKey')->with($key)->once();
         CacheFacade::shouldReceive('remember')->with($key, $minutes, m::any())->once();
 
@@ -318,7 +305,6 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
         $arg2 = [uniqid(), uniqid(), uniqid()];
         $verbString = $verb.':'.$arg1.','.implode('|', $arg2);
         $this->service->setEnableCaching(false);
-        $this->service->shouldReceive('getCacheSelector')->with($key)->once()->andReturn($key);
         $this->service->shouldReceive('indexKey')->with($key)->once();
         $this->service->shouldReceive('log')->once();
         $query->shouldReceive($verb)->with($arg1, $arg2)->once();
