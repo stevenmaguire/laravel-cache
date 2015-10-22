@@ -7,31 +7,6 @@ use Stevenmaguire\Laravel\Services\EloquentCache;
 
 class ConcreteTest extends EloquentCache
 {
-    protected $testCacheKey;
-    protected $testModel;
-
-    /**
-     * Get cache key from concrete service
-     *
-     * @return string
-     */
-    public function getCacheKey()
-    {
-        return $this->testCacheKey;
-    }
-
-    public function setCacheKey($key)
-    {
-        $this->testCacheKey = $key;
-
-        return $this;
-    }
-
-    public function getModel()
-    {
-
-    }
-
     public function getCacheIndexKey()
     {
         return $this->cacheIndexKey;
