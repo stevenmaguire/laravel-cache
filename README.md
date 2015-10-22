@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/travis/stevenmaguire/laravel-cache/master.svg?style=flat-square)](https://travis-ci.org/stevenmaguire/laravel-cache)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/stevenmaguire/laravel-cache.svg?style=flat-square)](https://scrutinizer-ci.com/g/stevenmaguire/laravel-cache/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/stevenmaguire/laravel-cache.svg?style=flat-square)](https://scrutinizer-ci.com/g/stevenmaguire/laravel-cache)
-[![Total Downloads](https://img.shields.io/packagist/dt/stevenmaguire/laravel-cache.svg?style=flat-square)](https://packagist.org/packages/league/laravel-cache)
+[![Total Downloads](https://img.shields.io/packagist/dt/stevenmaguire/laravel-cache.svg?style=flat-square)](https://packagist.org/packages/stevenmaguire/laravel-cache)
 
 Seamlessly adding caching to Laravel Eloquent service objects.
 
