@@ -39,29 +39,6 @@ class UserRegistrar implements Stevenmaguire\Laravel\Contracts\Cacheable
 }
 ```
 
-### Implement abstract methods
-
-```php
-    /**
-     * Get cache key from concrete service
-     *
-     * @return string
-     */
-    abstract protected function getCacheKey();
-
-    /**
-     * Get model from concrete service
-     *
-     * @return Illuminate\Database\Eloquent\Model
-     */
-    abstract protected function getModel();
-```
-
-
-`getCacheKey` is intended to provide cache key grouping at the repository level. It will attempt to use this as a prefix when creating cache keys.
-
-`getModel` is intended to return the model associated with the repository in question, assuming you have one repo per entity.
-
 ### Construct queries
 
 Build queries using Eloquent and request cache object.
@@ -75,16 +52,6 @@ class UserRegistrar extends EloquentCache
     public function __construct(User $user)
     {
         $this->user = $user;
-    }
-
-    protected function getCacheKey()
-    {
-        return 'users';
-    }
-
-    protected function getModel()
-    {
-        return $this->user;
     }
 
     public function getAllUsers()

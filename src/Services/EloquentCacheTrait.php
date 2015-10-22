@@ -129,7 +129,10 @@ trait EloquentCacheTrait
      *
      * @return string
      */
-    abstract protected function getCacheKey();
+    protected function getCacheKey()
+    {
+        return get_class($this);
+    }
 
     /**
      * Creates fully qualified key.
@@ -152,13 +155,6 @@ trait EloquentCacheTrait
     {
         return CacheFacade::get($this->cacheIndexKey, []);
     }
-
-    /**
-     * Get model from concrete service
-     *
-     * @return Illuminate\Database\Eloquent\Model
-     */
-    abstract protected function getModel();
 
     /**
      * Get keys for concrete service

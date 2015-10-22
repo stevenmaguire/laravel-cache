@@ -2,6 +2,23 @@
 
 All Notable changes to `stevenmaguire/laravel-cache` will be documented in this file
 
+## 1.0.0 - 2015-10-22
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Abstract methods from EloquentCacheTrait
+
+### Security
+- Nothing
+
 ## 0.1.6 - 2015-10-22
 
 ### Added

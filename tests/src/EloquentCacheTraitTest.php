@@ -34,9 +34,6 @@ class EloquentCacheTraitTest extends \PHPUnit_Framework_TestCase
 
     private function withExistingKeys(array $keys)
     {
-        $serviceKey = 'service-key';
-        $this->service->setCacheKey($serviceKey);
-
         CacheFacade::shouldReceive('get')
             ->with($this->service->getCacheIndexKey(), [])
             ->once()
