@@ -47,20 +47,20 @@ trait EloquentCacheTrait
      */
     protected function cache($key, Builder $query, $verb = 'get')
     {
-        $this->indexKey($key);
+        $actualKey = $this->indexKey($key);
 
-        $fetchData = function () use ($key, $query, $verb) {
-            $this->log('refreshing cache for '.get_class($this).' ('.$key.')');
+        $fetchData = function () use ($actualKey, $query, $verb) {
+            $this->log('refreshing cache for '.get_class($this).' ('.$actualKey.')');
 
             return $this->callQueryVerb($query, $verb);
         };
 
         if ($this->enableCaching) {
             if ($this->cacheForMinutes > 0) {
-                return CacheFacade::remember($key, $this->cacheForMinutes, $fetchData);
+                return CacheFacade::remember($actualKey, $this->cacheForMinutes, $fetchData);
             }
 
-            return CacheFacade::rememberForever($key, $fetchData);
+            return CacheFacade::rememberForever($actualKey, $fetchData);
         }
 
         return $fetchData();
@@ -77,19 +77,9 @@ trait EloquentCacheTrait
      */
     protected function callQueryVerb(Builder $query, $verbKey)
     {
-        $verbParts = explode(':', $verbKey);
-        $verb = array_shift($verbParts);
-        $params = [];
+        $verb = static::getVerbParts($verbKey);
 
-        if (!empty($verbParts)) {
-            $params = array_map(function ($param) {
-                $subParams = explode('|', $param);
-
-                return count($subParams) > 1 ? $subParams : $subParams[0];
-            }, explode(',', array_shift($verbParts)));
-        }
-
-        return call_user_func_array([$query, $verb], $params);
+        return call_user_func_array([$query, $verb[0]], $verb[1]);
     }
 
     /**
@@ -142,6 +132,18 @@ trait EloquentCacheTrait
     abstract protected function getCacheKey();
 
     /**
+     * Creates fully qualified key.
+     *
+     * @param  string  $suffix
+     *
+     * @return string
+     */
+    protected function getFullKey($suffix)
+    {
+        return $this->getCacheKey().'.'.$suffix;
+    }
+
+    /**
      * Get keys from key inventory
      *
      * @return array
@@ -169,21 +171,40 @@ trait EloquentCacheTrait
     {
         $keys = $this->getKeys();
         $serviceKey = $this->getCacheKey();
-
-        if (!isset($keys[$serviceKey])) {
-            $keys[$serviceKey] = [];
-        } elseif (!is_array($keys[$serviceKey])) {
-            $keys[$serviceKey] = [$keys[$serviceKey]];
-        }
+        $serviceKeys = isset($keys[$serviceKey]) ? $keys[$serviceKey] : [];
 
         if (!is_null($pattern)) {
-            $keys[$serviceKey] = $this->filterArrayValuesWithPattern(
-                $keys[$serviceKey],
+            $serviceKeys = $this->filterArrayValuesWithPattern(
+                $serviceKeys,
                 $pattern
             );
         }
 
-        return $keys[$serviceKey];
+        return $serviceKeys;
+    }
+
+    /**
+     * Attempts to deconstruct verb into method name and parameters.
+     *
+     * @param  string   $verbKey
+     *
+     * @return array
+     */
+    public static function getVerbParts($verbKey)
+    {
+        $verbParts = explode(':', $verbKey);
+        $verb = array_shift($verbParts);
+        $params = [];
+
+        if (!empty($verbParts)) {
+            $params = array_map(function ($param) {
+                $subParams = explode('|', $param);
+
+                return count($subParams) > 1 ? $subParams : $subParams[0];
+            }, explode(',', array_shift($verbParts)));
+        }
+
+        return [$verb, $params];
     }
 
     /**
@@ -191,7 +212,7 @@ trait EloquentCacheTrait
      *
      * @param  string $key
      *
-     * @return void
+     * @return string
      */
     protected function indexKey($key)
     {
@@ -202,6 +223,8 @@ trait EloquentCacheTrait
         $keys = array_unique($keys);
 
         $this->setServiceKeys($keys);
+
+        return $this->getFullKey($key);
     }
 
     /**
@@ -245,9 +268,10 @@ trait EloquentCacheTrait
         $keys = $this->getServiceKeys($pattern);
 
         array_map(function ($key) {
-            $this->log('flushing cache for '.get_class($this).' ('.$key.')');
+            $actualKey = $this->getFullKey($key);
+            $this->log('flushing cache for '.get_class($this).' ('.$actualKey.')');
 
-            CacheFacade::forget($key);
+            CacheFacade::forget($actualKey);
         }, $keys);
     }
 }
