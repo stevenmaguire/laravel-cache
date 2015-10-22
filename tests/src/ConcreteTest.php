@@ -58,6 +58,21 @@ class ConcreteTest extends EloquentCache
         return $this;
     }
 
+    public function isCacheEnabled()
+    {
+        return $this->enableCaching;
+    }
+
+    public function isCacheForever()
+    {
+        return $this->cacheForMinutes == 0;
+    }
+
+    public function getCacheMinutes()
+    {
+        return $this->cacheForMinutes;
+    }
+
     public function setEnableLogging($enable = true)
     {
         $this->enableLogging = $enable;

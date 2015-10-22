@@ -2,6 +2,23 @@
 
 All Notable changes to `stevenmaguire/laravel-cache` will be documented in this file
 
+## 0.1.6 - 2015-10-22
+
+### Added
+- Improve key management and tests
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.1.5 - 2015-10-21
 
 ### Added
